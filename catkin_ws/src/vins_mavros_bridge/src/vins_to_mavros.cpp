@@ -51,28 +51,28 @@ void vins_cb(const nav_msgs::Odometry::ConstPtr& msg)
     pose.pose.position.y = -msg->pose.pose.position.x;
     pose.pose.position.z =  msg->pose.pose.position.z;
 
-    double qx = msg->pose.pose.orientation.x;
-    double qy = msg->pose.pose.orientation.y;
-    double qz = msg->pose.pose.orientation.z;
-    double qw = msg->pose.pose.orientation.w;
-
-    geometry_msgs::Quaternion map_optical_q;
-    map_optical_q.x =  qy;
-    map_optical_q.y = -qx;
-    map_optical_q.z =  qz;
-    map_optical_q.w =  qw;
-
-    // Current live data shows VINS attitude is still optical-frame-like.
-    // After the existing ENU/map XY swap, apply a fixed -90 deg pitch so the
-    // published attitude matches MAVROS/PX4's FLU/base_link body semantics.
-    geometry_msgs::Quaternion optical_to_base_q;
-    optical_to_base_q.x = 0.0;
-    optical_to_base_q.y = -std::sqrt(0.5);
-    optical_to_base_q.z = 0.0;
-    optical_to_base_q.w =  std::sqrt(0.5);
-
-    pose.pose.orientation = multiply_quaternion(
-        map_optical_q, optical_to_base_q);
+    // Temporary A/B test: bypass attitude axis remap and fixed body rotation
+    // compensation, and publish the raw VINS quaternion directly.
+    // double qx = msg->pose.pose.orientation.x;
+    // double qy = msg->pose.pose.orientation.y;
+    // double qz = msg->pose.pose.orientation.z;
+    // double qw = msg->pose.pose.orientation.w;
+    //
+    // geometry_msgs::Quaternion map_optical_q;
+    // map_optical_q.x =  qy;
+    // map_optical_q.y = -qx;
+    // map_optical_q.z =  qz;
+    // map_optical_q.w =  qw;
+    //
+    // geometry_msgs::Quaternion optical_to_base_q;
+    // optical_to_base_q.x = 0.0;
+    // optical_to_base_q.y = -std::sqrt(0.5);
+    // optical_to_base_q.z = 0.0;
+    // optical_to_base_q.w =  std::sqrt(0.5);
+    //
+    // pose.pose.orientation = multiply_quaternion(
+    //     map_optical_q, optical_to_base_q);
+    pose.pose.orientation = msg->pose.pose.orientation;
 
     pub.publish(pose);
 }
