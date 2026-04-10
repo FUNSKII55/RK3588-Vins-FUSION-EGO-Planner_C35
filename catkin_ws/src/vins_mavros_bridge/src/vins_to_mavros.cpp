@@ -1,4 +1,3 @@
-#include <cmath>
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/PoseStamped.h>
@@ -6,40 +5,6 @@
 #include <geometry_msgs/TransformStamped.h>
 
 ros::Publisher pub;
-
-namespace
-{
-geometry_msgs::Quaternion normalize_quaternion(
-    double x, double y, double z, double w)
-{
-    geometry_msgs::Quaternion q;
-    const double norm = std::sqrt(x * x + y * y + z * z + w * w);
-    if (norm <= 1e-12) {
-        q.x = 0.0;
-        q.y = 0.0;
-        q.z = 0.0;
-        q.w = 1.0;
-        return q;
-    }
-
-    q.x = x / norm;
-    q.y = y / norm;
-    q.z = z / norm;
-    q.w = w / norm;
-    return q;
-}
-
-geometry_msgs::Quaternion multiply_quaternion(
-    const geometry_msgs::Quaternion& a,
-    const geometry_msgs::Quaternion& b)
-{
-    return normalize_quaternion(
-        a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
-        a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
-        a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
-        a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z);
-}
-}  // namespace
 
 void vins_cb(const nav_msgs::Odometry::ConstPtr& msg)
 {
@@ -56,23 +21,10 @@ void vins_cb(const nav_msgs::Odometry::ConstPtr& msg)
     double qz = msg->pose.pose.orientation.z;
     double qw = msg->pose.pose.orientation.w;
 
-    geometry_msgs::Quaternion map_optical_q;
-    map_optical_q.x =  qy;
-    map_optical_q.y = -qx;
-    map_optical_q.z =  qz;
-    map_optical_q.w =  qw;
-
-    // The live A/B test showed raw imu_propagate attitude is still
-    // optical-frame-like (~90 deg off from PX4's base_link attitude), so keep
-    // the fixed body rotation compensation enabled for MAVROS/PX4 semantics.
-    geometry_msgs::Quaternion optical_to_base_q;
-    optical_to_base_q.x = 0.0;
-    optical_to_base_q.y = -std::sqrt(0.5);
-    optical_to_base_q.z = 0.0;
-    optical_to_base_q.w =  std::sqrt(0.5);
-
-    pose.pose.orientation = multiply_quaternion(
-        map_optical_q, optical_to_base_q);
+    pose.pose.orientation.x =  qy;
+    pose.pose.orientation.y = -qx;
+    pose.pose.orientation.z =  qz;
+    pose.pose.orientation.w =  qw;
 
     pub.publish(pose);
 }
@@ -110,7 +62,7 @@ int main(int argc, char** argv)
         "/mavros/vision_pose/pose", 10);
 
     ros::Subscriber sub = nh.subscribe(
-        "/vins_estimator/imu_propagate", 100, vins_cb);
+        "/vins_estimator/odometry", 10, vins_cb);
 
     publish_static_tf();
 
