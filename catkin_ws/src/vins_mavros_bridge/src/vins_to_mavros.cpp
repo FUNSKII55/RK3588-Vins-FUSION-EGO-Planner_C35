@@ -110,7 +110,7 @@ int main(int argc, char** argv)
         "/mavros/vision_pose/pose", 10);
 
     ros::Subscriber sub = nh.subscribe(
-        "/vins_estimator/odometry", 10, vins_cb);
+        "/vins_estimator/imu_propagate", 100, vins_cb);
 
     publish_static_tf();
 
