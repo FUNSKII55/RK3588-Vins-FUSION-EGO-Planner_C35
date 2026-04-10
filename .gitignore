@@ -1,0 +1,75 @@
+# ROS / catkin build outputs
+/catkin_ws/build/
+/catkin_ws/devel/
+/catkin_ws/logs/
+/catkin_ws/.catkin_tools/
+/build/
+/devel/
+/install/
+/log/
+/logs/
+
+# Third-party build outputs
+/third_party/build/
+/third_party/librealsense/build/
+
+# Runtime data, datasets, temp artifacts
+/archive/
+/tmp/
+/data/dataset/
+/data/result/
+/data/rosbag/
+/data/video/
+.ros/
+*.log
+*.log.*
+
+# Robotics recordings / databases
+*.bag
+*.db3
+*.sqlite
+*.sqlite3
+*.mcap
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.codex
+
+# Large model and inference artifacts
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.engine
+*.weights
+*.tflite
+*.trt
+*.cache
+
+# Common compiled artifacts
+*.o
+*.obj
+*.a
+*.la
+*.lo
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+
+# CMake / compile databases
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+compile_commands.json
