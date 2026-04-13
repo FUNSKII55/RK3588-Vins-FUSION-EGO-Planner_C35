@@ -1,0 +1,10 @@
+<launch>
+  <arg name="config_file" default="/home/orangepi/projects/uav_stack/yaml/realsense_stereo_imu_config.yaml"/>
+
+  <node pkg="vins"
+        type="vins_node"
+        name="vins_estimator"
+        output="screen"
+        args="$(arg config_file)">
+  </node>
+</launch>
