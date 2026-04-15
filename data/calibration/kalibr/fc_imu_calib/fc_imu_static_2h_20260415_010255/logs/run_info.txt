@@ -1,0 +1,9 @@
+run_id: fc_imu_static_2h_20260415_010255
+start: 2026-04-15 01:02:55 CST
+expected_end: 2026-04-15 03:02:55 CST
+imu_topic: /mavros/imu/data_raw
+duration_min: 120
+run_dir: /home/orangepi/projects/uav_stack/data/calibration/kalibr/fc_imu_calib/fc_imu_static_2h_20260415_010255
+end: 2026-04-15 03:03:17 CST
+imu_utils_exit: 0
+rosbag_exit: 0
